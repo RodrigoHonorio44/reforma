@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import API_URL from '../services/api';
+import { API_URL } from '../services/api';
 import { Trash2, PlusCircle, MessageSquareText } from 'lucide-react';
 
 export default function ChatRulesAdmin() {

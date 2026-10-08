@@ -10,6 +10,7 @@ import Home from '../pages/Home';
 import About from '../pages/About';
 import ServiceDetail from '../pages/ServiceDetail';
 import Login from '../pages/Login';
+import Register from '../pages/Register';
 import Admin from '../pages/Admin';
 
 export default function AppRoutes() {
@@ -26,6 +27,7 @@ export default function AppRoutes() {
             <Route path="/sobre" element={<About />} />
             <Route path="/servicos/:id" element={<ServiceDetail />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/admin" element={<Admin />} />
           </Routes>
         </main>
