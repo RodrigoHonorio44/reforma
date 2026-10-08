@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { ShieldCheck, Clock, ThumbsUp, MapPin } from 'lucide-react';
 
@@ -12,8 +11,6 @@ export default function About() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col justify-between">
-      <Navbar />
-
       <main className="py-12 px-4 max-w-4xl mx-auto space-y-12 w-full">
         <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-slate-200 space-y-6">
           <span className="bg-yellow-500/10 text-yellow-600 border border-yellow-500/20 px-3.5 py-1 rounded-full text-sm font-semibold inline-block">

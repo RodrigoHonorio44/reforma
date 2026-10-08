@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Lock, Mail } from 'lucide-react';
+
+// URL base da sua API do projeto Maricá Reparos (apontando para o servidor de produção)
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://api-reforma.rodhonsystem.com.br';
+const API_URL = BASE_URL.endsWith('/api') ? BASE_URL : `${BASE_URL.replace(/\/$/, '')}/api`;
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -14,19 +17,23 @@ export default function Login() {
     e.preventDefault();
     
     try {
-      const response = await fetch('https://api.seudominio.com/api/login', {
+      // Aponta para a rota correta do seu backend: /api/login
+      const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ 
+          email: email.trim().toLowerCase(), 
+          password 
+        })
       });
 
       const data = await response.json();
 
-      if (response.ok) {
-        localStorage.setItem('authToken', data.token);
+      if (response.ok && data.token) {
+        localStorage.setItem('token', data.token);
         navigate('/admin');
       } else {
-        setError(data.error || 'Falha ao autenticar');
+        setError(data.error || data.message || 'E-mail ou senha incorretos.');
       }
     } catch (err) {
       setError('Erro de conexão com o servidor.');
@@ -35,8 +42,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col justify-between">
-      <Navbar />
-      <main className="py-16 px-4 max-w-md mx-auto w-full">
+      <main className="py-16 px-4 max-w-md mx-auto w-full my-auto">
         <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200 space-y-6">
           <div className="text-center space-y-2">
             <h1 className="text-2xl font-extrabold text-slate-900">Área Restrita</h1>
