@@ -6,13 +6,19 @@ import Gallery from '../components/Gallery';
 import EmergencyBanner from '../components/EmergencyBanner';
 import TrustBadges from '../components/TrustBadges';
 import FaqSection from '../components/FaqSection';
-import { Zap, Paintbrush, Wrench, ShieldCheck, Clock, ThumbsUp, MapPin, MessageCircle } from 'lucide-react';
+import { Zap, Paintbrush, Wrench, Hammer, ShieldCheck, Clock, ThumbsUp, MapPin, MessageCircle } from 'lucide-react';
 
 export default function Home() {
   const whatsappNumber = "5521999999999";
   const whatsappMessage = encodeURIComponent("Olá! Gostaria de solicitar um orçamento para serviços em Maricá.");
 
   const services = [
+    {
+      slug: "marmore",
+      title: "Serviços de Mármore e Granito",
+      description: "Confecção de peças sob medida, pias, bancadas, soleiras, lavatórios e instalação completa com acabamento profissional.",
+      icon: <Hammer className="w-8 h-8 text-amber-600" />
+    },
     {
       slug: "eletrica",
       title: "Instalações e Reparos Elétricos",
@@ -38,24 +44,24 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col justify-between">
       <main>
-        {/* HERO */}
-        <section id="inicio" className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-20 px-4">
+        {/* HERO LIMPO E PROFISSIONAL */}
+        <section id="inicio" className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-24 px-4">
           <div className="max-w-4xl mx-auto text-center space-y-6">
-            <span className="bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 px-3 py-1 rounded-full text-sm font-semibold inline-block">
+            <span className="bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 px-3.5 py-1.5 rounded-full text-sm font-semibold inline-block shadow-sm">
               Atendimento Especializado em Maricá e Região
             </span>
             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
-              Soluções Profissionais em <span className="text-yellow-400">Elétrica, Pintura e Reparos</span>
+              Soluções Profissionais em <span className="text-yellow-400">Mármores, Elétrica e Reformas</span>
             </h1>
             <p className="text-lg text-slate-300 max-w-2xl mx-auto">
-              Serviço rápido, limpo e com garantia. Cuido da manutenção da sua casa com total segurança e profissionalismo.
+              Serviço rápido, limpo e com garantia. Cuido da manutenção e acabamento da sua casa com total segurança e profissionalismo.
             </p>
             <div className="pt-4 flex flex-col sm:flex-row justify-center gap-4">
               <a 
                 href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-green-600 hover:bg-green-700 text-white text-lg font-semibold px-8 py-3.5 rounded-xl shadow-lg flex items-center justify-center space-x-2 transition"
+                className="bg-green-600 hover:bg-green-700 text-white text-lg font-semibold px-8 py-3.5 rounded-xl shadow-xl flex items-center justify-center space-x-2 transition transform hover:-translate-y-0.5"
               >
                 <MessageCircle className="w-6 h-6" />
                 <span>Pedir Orçamento no WhatsApp</span>
@@ -100,7 +106,7 @@ export default function Home() {
             <h2 className="text-3xl font-bold tracking-tight text-slate-900">Nossos Serviços</h2>
             <p className="text-slate-600">O que você precisa para manter sua residência em perfeito estado.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((service, index) => (
               <div key={index} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition">
                 <div>

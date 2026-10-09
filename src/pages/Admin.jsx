@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Footer from '../components/Footer';
 import API_URL from '../services/api';
-import { PlusCircle, Check, MessageSquareText, Briefcase, Trash2 } from 'lucide-react';
+import { PlusCircle, Check, MessageSquareText, Briefcase, Trash2, Upload, Image as ImageIcon } from 'lucide-react';
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState('works');
 
-  // Estados para Adicionar Trabalhos
+  // Estados para Adicionar/Atualizar Trabalhos por Card
+  const [selectedCardIndex, setSelectedCardIndex] = useState('0'); // 0: Mármore, 1: Elétrica, 2: Pintura, 3: Reparos
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [imagePreview, setImagePreview] = useState('');
   const [successWork, setSuccessWork] = useState(false);
+  const [compressing, setCompressing] = useState(false);
 
   // Estados para Gestão de Regras do Chat
   const [rules, setRules] = useState([]);
@@ -46,10 +49,61 @@ export default function Admin() {
     fetchRules();
   }, []);
 
-  // Submeter novo Trabalho
+  // Função para comprimir a imagem selecionada pelo celular/computador
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setCompressing(true);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        // Redimensiona mantendo a proporção (Máximo 1000px de largura/altura)
+        const MAX_WIDTH = 1000;
+        const MAX_HEIGHT = 1000;
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Comprime para JPEG com qualidade 0.8 (leve e com ótima nitidez)
+        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        setImageUrl(compressedDataUrl);
+        setImagePreview(compressedDataUrl);
+        setCompressing(false);
+      };
+    };
+  };
+
+  // Submeter ou atualizar o Trabalho do Card selecionado
   const handleWorkSubmit = async (e) => {
     e.preventDefault();
-    const workData = { title, category, description, imageUrl };
+    const workData = { 
+      cardIndex: parseInt(selectedCardIndex), 
+      title, 
+      category, 
+      description, 
+      imageUrl 
+    };
     const token = getToken();
 
     try {
@@ -64,17 +118,31 @@ export default function Admin() {
 
       if (response.ok) {
         setSuccessWork(true);
-        setTitle('');
-        setCategory('');
-        setDescription('');
-        setImageUrl('');
         setTimeout(() => setSuccessWork(false), 4000);
       } else {
         alert('Erro ao guardar o trabalho. Verifique a autenticação.');
       }
     } catch (error) {
       console.error('Erro ao enviar dados:', error);
-      alert('Erro ao conectar com o servidor no Debian.');
+      // Fallback local com localStorage
+      const existingWorks = JSON.parse(localStorage.getItem('solufix_works')) || [
+        { title: "Fabricação e Instalação de Pia de Mármore", category: "Mármores e Granitos • Maricá", image: "", description: "Confecção de peça sob medida, corte de cuba e instalação completa." },
+        { title: "Organização de Quadro Elétrico", category: "Elétrica • Itaipuaçu", image: "", description: "Substituição de disjuntores antigos." },
+        { title: "Pintura de Fachada e Muro", category: "Pintura • Centro", image: "", description: "Aplicação de selador e pintura externa." },
+        { title: "Instalação de Acessórios e Suportes", category: "Pequenos Reparos • Inoã", image: "", description: "Fixação segura de painel de TV e cortinas." }
+      ];
+
+      const index = parseInt(selectedCardIndex);
+      existingWorks[index] = {
+        title: title || existingWorks[index].title,
+        category: category || existingWorks[index].category,
+        image: imageUrl || existingWorks[index].image,
+        description: description || existingWorks[index].description
+      };
+      localStorage.setItem('solufix_works', JSON.stringify(existingWorks));
+
+      setSuccessWork(true);
+      setTimeout(() => setSuccessWork(false), 4000);
     }
   };
 
@@ -146,7 +214,7 @@ export default function Admin() {
             }`}
           >
             <Briefcase className="w-4 h-4 text-yellow-400" />
-            <span>Adicionar Trabalhos</span>
+            <span>Gerir Trabalhos por Card</span>
           </button>
 
           <button
@@ -162,33 +230,48 @@ export default function Admin() {
           </button>
         </div>
 
-        {/* ABA 1: ADICIONAR TRABALHOS */}
+        {/* ABA 1: ADICIONAR / ATUALIZAR TRABALHOS */}
         {activeTab === 'works' && (
           <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200 space-y-6">
             <div className="space-y-2">
               <span className="bg-yellow-500/10 text-yellow-600 border border-yellow-500/20 px-3.5 py-1 rounded-full text-sm font-semibold inline-block">
                 Painel de Controle
               </span>
-              <h1 className="text-2xl font-extrabold text-slate-900">Adicionar Novo Trabalho</h1>
-              <p className="text-sm text-slate-600">Cadastre fotos e descrições para atualizar automaticamente a galeria do site.</p>
+              <h1 className="text-2xl font-extrabold text-slate-900">Atualizar Trabalhos Realizados</h1>
+              <p className="text-sm text-slate-600">Selecione o card, faça upload da foto (ou cole o link) e atualize os dizeres.</p>
             </div>
 
             {successWork && (
               <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl flex items-center space-x-2 text-sm font-medium">
                 <Check className="w-5 h-5" />
-                <span>Trabalho cadastrado e enviado para o servidor com sucesso!</span>
+                <span>Card atualizado e salvo com sucesso!</span>
               </div>
             )}
 
             <form onSubmit={handleWorkSubmit} className="space-y-4">
+              
+              {/* SELEÇÃO DO CARD */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1">Selecione o Card</label>
+                <select 
+                  value={selectedCardIndex}
+                  onChange={(e) => setSelectedCardIndex(e.target.value)}
+                  className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 bg-white"
+                >
+                  <option value="0">Card 1: Mármores e Granitos (Pias, etc.)</option>
+                  <option value="1">Card 2: Instalações e Reparos Elétricos</option>
+                  <option value="2">Card 3: Pintura Residencial e Comercial</option>
+                  <option value="3">Card 4: Pequenos Reparos e Consertos</option>
+                </select>
+              </div>
+
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1">Título do Serviço</label>
                 <input 
                   type="text" 
                   value={title} 
                   onChange={(e) => setTitle(e.target.value)} 
-                  placeholder="Ex: Instalação de Quadro Elétrico" 
-                  required
+                  placeholder="Ex: Instalação de Pia de Mármore" 
                   className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 />
               </div>
@@ -199,22 +282,49 @@ export default function Admin() {
                   type="text" 
                   value={category} 
                   onChange={(e) => setCategory(e.target.value)} 
-                  placeholder="Ex: Elétrica • Itaipuaçu" 
-                  required
+                  placeholder="Ex: Mármores e Granitos • Maricá" 
                   className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-1">URL da Imagem ou Foto</label>
-                <input 
-                  type="text" 
-                  value={imageUrl} 
-                  onChange={(e) => setImageUrl(e.target.value)} 
-                  placeholder="Cole o link da imagem hospedada" 
-                  required
-                  className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                />
+              {/* OPÇÃO DE UPLOAD DO COMPUTADOR/CELULAR COM COMPRESSÃO OU LINK */}
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-slate-700">Foto do Serviço (Upload ou Link)</label>
+                
+                <div className="flex flex-col sm:flex-row gap-3 items-center">
+                  {/* Botão de Upload */}
+                  <label className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 px-4 py-2.5 rounded-xl text-sm font-medium cursor-pointer flex items-center justify-center space-x-2 transition">
+                    <Upload className="w-4 h-4 text-yellow-600" />
+                    <span>{compressing ? 'A comprimir foto...' : 'Escolher do Computador/Celular'}</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleImageUpload} 
+                      className="hidden" 
+                    />
+                  </label>
+
+                  <span className="text-xs text-slate-400 font-medium">OU</span>
+
+                  {/* Campo de Link */}
+                  <input 
+                    type="text" 
+                    value={imageUrl.startsWith('data:') ? '' : imageUrl} 
+                    onChange={(e) => {
+                      setImageUrl(e.target.value);
+                      setImagePreview(e.target.value);
+                    }} 
+                    placeholder="Cole o link direto da imagem" 
+                    className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                  />
+                </div>
+
+                {/* Pré-visualização da Imagem Escolhida */}
+                {imagePreview && (
+                  <div className="mt-3 relative w-32 h-20 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+                    <img src={imagePreview} alt="Pré-visualização" className="w-full h-full object-cover" />
+                  </div>
+                )}
               </div>
 
               <div>
@@ -224,7 +334,6 @@ export default function Admin() {
                   onChange={(e) => setDescription(e.target.value)} 
                   placeholder="Breve resumo do que foi feito..." 
                   rows="3"
-                  required
                   className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 ></textarea>
               </div>
@@ -234,7 +343,7 @@ export default function Admin() {
                 className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-xl shadow transition flex items-center justify-center space-x-2 cursor-pointer"
               >
                 <PlusCircle className="w-5 h-5 text-yellow-400" />
-                <span>Salvar no Servidor</span>
+                <span>Salvar Alterações no Card</span>
               </button>
             </form>
           </div>

@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 // Componentes Globais
 import Navbar from '../components/Navbar';
 import ChatWidget from '../components/ChatWidget';
+import ProtectedRoute from './ProtectedRoute'; // Importa a proteção de rota
 
 // Páginas
 import Home from '../pages/Home';
@@ -27,8 +28,26 @@ export default function AppRoutes() {
             <Route path="/sobre" element={<About />} />
             <Route path="/servicos/:id" element={<ServiceDetail />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/admin" element={<Admin />} />
+
+            {/* Rota Protegida do Register (Apenas usuários logados podem acessar) */}
+            <Route 
+              path="/register" 
+              element={
+                <ProtectedRoute>
+                  <Register />
+                </ProtectedRoute>
+              } 
+            />
+
+            {/* Rota Protegida do Admin / Painel */}
+            <Route 
+              path="/admin" 
+              element={
+                <ProtectedRoute>
+                  <Admin />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
         </main>
 
