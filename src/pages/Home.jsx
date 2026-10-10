@@ -17,25 +17,25 @@ export default function Home() {
       slug: "marmore",
       title: "Serviços de Mármore e Granito",
       description: "Confecção de peças sob medida, pias, bancadas, soleiras, lavatórios e instalação completa com acabamento profissional.",
-      icon: <Hammer className="w-8 h-8 text-amber-600" />
+      icon: <Hammer className="w-7 h-7 text-amber-600" />
     },
     {
       slug: "eletrica",
       title: "Instalações e Reparos Elétricos",
       description: "Manutenção preventiva e corretiva, troca de disjuntores, tomadas, chuveiros, ventiladores de teto e instalações residenciais.",
-      icon: <Zap className="w-8 h-8 text-yellow-500" />
+      icon: <Zap className="w-7 h-7 text-yellow-500" />
     },
     {
       slug: "pintura",
       title: "Pintura Residencial e Comercial",
       description: "Pintura de paredes, tetos, portões, aplicação de massa corrida, texturas e acabamentos de alta qualidade.",
-      icon: <Paintbrush className="w-8 h-8 text-blue-500" />
+      icon: <Paintbrush className="w-7 h-7 text-blue-500" />
     },
     {
       slug: "reparos",
       title: "Pequenos Reparos e Consertos",
       description: "Fixação de prateleiras, varões de cortina, troca de fechaduras, pequenos reparos hidráulicos e manutenções gerais.",
-      icon: <Wrench className="w-8 h-8 text-orange-500" />
+      icon: <Wrench className="w-7 h-7 text-orange-500" />
     }
   ];
 
@@ -44,26 +44,26 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col justify-between">
       <main>
-        {/* HERO LIMPO E PROFISSIONAL */}
-        <section id="inicio" className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-24 px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <span className="bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 px-3.5 py-1.5 rounded-full text-sm font-semibold inline-block shadow-sm">
+        {/* HERO OTIMIZADO MOBILE */}
+        <section id="inicio" className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-12 sm:py-16 px-4 text-center">
+          <div className="max-w-3xl mx-auto space-y-4">
+            <span className="bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 px-3 py-1 rounded-full text-xs font-semibold inline-block shadow-sm">
               Atendimento Especializado em Maricá e Região
             </span>
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight leading-snug">
               Soluções Profissionais em <span className="text-yellow-400">Mármores, Elétrica e Reformas</span>
             </h1>
-            <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto leading-relaxed">
               Serviço rápido, limpo e com garantia. Cuido da manutenção e acabamento da sua casa com total segurança e profissionalismo.
             </p>
-            <div className="pt-4 flex flex-col sm:flex-row justify-center gap-4">
+            <div className="pt-2">
               <a 
                 href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-green-600 hover:bg-green-700 text-white text-lg font-semibold px-8 py-3.5 rounded-xl shadow-xl flex items-center justify-center space-x-2 transition transform hover:-translate-y-0.5"
+                className="bg-green-600 hover:bg-green-700 text-white text-sm sm:text-base font-semibold px-6 py-3 rounded-xl shadow-lg inline-flex items-center justify-center space-x-2 transition"
               >
-                <MessageCircle className="w-6 h-6" />
+                <MessageCircle className="w-5 h-5" />
                 <span>Pedir Orçamento no WhatsApp</span>
               </a>
             </div>
@@ -74,52 +74,52 @@ export default function Home() {
         <EmergencyBanner />
 
         {/* DIFERENCIAIS */}
-        <section className="bg-white py-10 border-b border-slate-200">
-          <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="flex items-center space-x-4 p-4">
-              <ShieldCheck className="w-10 h-10 text-yellow-500 flex-shrink-0" />
+        <section className="bg-white py-8 border-b border-slate-200">
+          <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl">
+              <ShieldCheck className="w-8 h-8 text-yellow-500 flex-shrink-0" />
               <div>
-                <h3 className="font-bold text-slate-900">Serviço Garantido</h3>
-                <p className="text-sm text-slate-600">Qualidade e segurança em cada detalhe.</p>
+                <h3 className="font-bold text-slate-900 text-sm">Serviço Garantido</h3>
+                <p className="text-xs text-slate-600">Qualidade e segurança.</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4 p-4">
-              <Clock className="w-10 h-10 text-yellow-500 flex-shrink-0" />
+            <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl">
+              <Clock className="w-8 h-8 text-yellow-500 flex-shrink-0" />
               <div>
-                <h3 className="font-bold text-slate-900">Pontualidade</h3>
-                <p className="text-sm text-slate-600">Respeito total aos prazos combinados.</p>
+                <h3 className="font-bold text-slate-900 text-sm">Pontualidade</h3>
+                <p className="text-xs text-slate-600">Respeito aos prazos.</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4 p-4">
-              <ThumbsUp className="w-10 h-10 text-yellow-500 flex-shrink-0" />
+            <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl">
+              <ThumbsUp className="w-8 h-8 text-yellow-500 flex-shrink-0" />
               <div>
-                <h3 className="font-bold text-slate-900">Preço Justo</h3>
-                <p className="text-sm text-slate-600">Orçamento transparente sem surpresas.</p>
+                <h3 className="font-bold text-slate-900 text-sm">Preço Justo</h3>
+                <p className="text-xs text-slate-600">Orçamento transparente.</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* SERVIÇOS */}
-        <section id="servicos" className="py-16 px-4 max-w-6xl mx-auto">
-          <div className="text-center space-y-3 mb-12">
-            <h2 className="text-3xl font-bold tracking-tight text-slate-900">Nossos Serviços</h2>
-            <p className="text-slate-600">O que você precisa para manter sua residência em perfeito estado.</p>
+        <section id="servicos" className="py-12 px-4 max-w-6xl mx-auto">
+          <div className="text-center space-y-2 mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Nossos Serviços</h2>
+            <p className="text-slate-600 text-sm">O que você precisa para manter sua residência em perfeito estado.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {services.map((service, index) => (
-              <div key={index} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition">
+              <div key={index} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition">
                 <div>
-                  <div className="bg-slate-100 p-4 rounded-xl inline-block mb-4">{service.icon}</div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-2">{service.title}</h3>
-                  <p className="text-slate-600 text-sm leading-relaxed mb-6">{service.description}</p>
+                  <div className="bg-slate-100 p-3 rounded-xl inline-block mb-3">{service.icon}</div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-1.5">{service.title}</h3>
+                  <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-4">{service.description}</p>
                 </div>
-                <div className="space-y-3 border-t border-slate-100 pt-4">
+                <div className="border-t border-slate-100 pt-3">
                   <Link 
                     to={`/servico/${service.slug}`}
-                    className="block text-center bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-sm py-2.5 rounded-lg transition"
+                    className="block text-center bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs sm:text-sm py-2 rounded-lg transition"
                   >
-                    Ver detalhes do serviço
+                    Ver detalhes
                   </Link>
                 </div>
               </div>
@@ -127,27 +127,20 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SELOS DE CONFIANÇA / GARANTIA */}
         <TrustBadges />
-
-        {/* PROVA SOCIAL / DEPOIMENTOS */}
         <Testimonials />
-
-        {/* GALERIA DE TRABALHOS */}
         <Gallery />
-
-        {/* PERGUNTAS FREQUENTES (FAQ) */}
         <FaqSection />
 
         {/* ÁREA DE ATUAÇÃO */}
-        <section id="regiao" className="bg-slate-100 py-16 px-4 text-center">
-          <div className="max-w-4xl mx-auto space-y-4">
-            <h2 className="text-3xl font-bold text-slate-900">Área de Atuação em Maricá</h2>
-            <p className="text-slate-600">Atendimento residencial presencial nos principais bairros:</p>
-            <div className="flex flex-wrap justify-center gap-3 pt-4">
+        <section id="regiao" className="bg-slate-100 py-12 px-4 text-center">
+          <div className="max-w-4xl mx-auto space-y-3">
+            <h2 className="text-2xl font-bold text-slate-900">Área de Atuação em Maricá</h2>
+            <p className="text-slate-600 text-sm">Atendimento residencial presencial nos principais bairros:</p>
+            <div className="flex flex-wrap justify-center gap-2 pt-2">
               {neighborhoods.map((bairro, idx) => (
-                <div key={idx} className="bg-white border border-slate-200 px-4 py-2 rounded-full text-slate-700 font-medium text-sm flex items-center space-x-2 shadow-sm">
-                  <MapPin className="w-4 h-4 text-red-500" />
+                <div key={idx} className="bg-white border border-slate-200 px-3 py-1.5 rounded-full text-slate-700 font-medium text-xs flex items-center space-x-1.5 shadow-sm">
+                  <MapPin className="w-3.5 h-3.5 text-red-500" />
                   <span>{bairro}</span>
                 </div>
               ))}
@@ -161,9 +154,9 @@ export default function Home() {
         href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
         target="_blank" 
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition transform hover:scale-110 z-50"
+        className="fixed bottom-4 right-4 bg-green-500 hover:bg-green-600 text-white p-3.5 rounded-full shadow-2xl flex items-center justify-center transition transform hover:scale-110 z-50"
       >
-        <MessageCircle className="w-7 h-7" />
+        <MessageCircle className="w-6 h-6" />
       </a>
 
       <Footer />

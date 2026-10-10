@@ -30,7 +30,8 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok && data.token) {
-        localStorage.setItem('token', data.token);
+        // Usa sessionStorage para expirar a sessão ao fechar a aba/navegador
+        sessionStorage.setItem('token', data.token);
         navigate('/admin');
       } else {
         setError(data.error || data.message || 'E-mail ou senha incorretos.');
