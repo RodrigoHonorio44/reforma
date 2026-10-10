@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://solufix.rodhonsystem.com.br/sitemap.xml
