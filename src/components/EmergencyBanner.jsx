@@ -1,14 +1,9 @@
 import React from 'react';
-import { Zap, PhoneCall } from 'lucide-react';
+import { Zap } from 'lucide-react';
+// 1. IMPORTAÇÃO DO SEU COMPONENTE WHATSAPP:
+import WhatsappButton from '../components/WatsappButton'; // Ajuste o caminho se necessário (ex: '../components/WhatsappButton')
 
 export default function EmergencyBanner() {
-  const WHATSAPP_NUMBER = '5521999999999'; // Substitua pelo seu número real
-
-  const handleEmergencyClick = () => {
-    const text = encodeURIComponent("Olá! Preciso de atendimento urgente/emergencial para um problema elétrico em Maricá.");
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, '_blank');
-  };
-
   return (
     <div className="bg-gradient-to-r from-amber-500 to-yellow-500 py-6 text-slate-950 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
@@ -21,13 +16,13 @@ export default function EmergencyBanner() {
             <p className="text-slate-900 text-sm font-medium">Atendimento rápido para curto-circuitos, tomadas danificadas e quedas de energia.</p>
           </div>
         </div>
-        <button
-          onClick={handleEmergencyClick}
-          className="bg-slate-950 hover:bg-slate-900 text-white font-bold px-6 py-3 rounded-xl shadow-lg flex items-center space-x-2 transition-transform hover:scale-105 whitespace-nowrap cursor-pointer"
-        >
-          <PhoneCall className="w-5 h-5 text-yellow-400" />
-          <span>Chamar Urgência no WhatsApp</span>
-        </button>
+
+        {/* 2. COMPONENTE REUTILIZADO COM MENSAGEM DE URGÊNCIA */}
+        <WhatsappButton 
+          text="Chamar Urgência no WhatsApp"
+          message="Olá! Preciso de atendimento urgente/emergencial para um problema elétrico em Maricá."
+          className="!bg-slate-950 hover:!bg-slate-900 !text-white !font-bold !px-6 !py-3 !rounded-xl shadow-lg transition-transform hover:scale-105 whitespace-nowrap"
+        />
       </div>
     </div>
   );

@@ -6,12 +6,10 @@ import Gallery from '../components/Gallery';
 import EmergencyBanner from '../components/EmergencyBanner';
 import TrustBadges from '../components/TrustBadges';
 import FaqSection from '../components/FaqSection';
-import { Zap, Paintbrush, Wrench, Hammer, ShieldCheck, Clock, ThumbsUp, MapPin, MessageCircle } from 'lucide-react';
+import WhatsappButton from '../components/WatsappButton'; 
+import { Zap, Paintbrush, Wrench, Hammer, ShieldCheck, Clock, ThumbsUp, MapPin } from 'lucide-react';
 
 export default function Home() {
-  const whatsappNumber = "5521999999999";
-  const whatsappMessage = encodeURIComponent("Olá! Gostaria de solicitar um orçamento para serviços em Maricá.");
-
   const services = [
     {
       slug: "marmore",
@@ -57,15 +55,11 @@ export default function Home() {
               Serviço rápido, limpo e com garantia. Cuido da manutenção e acabamento da sua casa com total segurança e profissionalismo.
             </p>
             <div className="pt-2">
-              <a 
-                href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-green-600 hover:bg-green-700 text-white text-sm sm:text-base font-semibold px-6 py-3 rounded-xl shadow-lg inline-flex items-center justify-center space-x-2 transition"
-              >
-                <MessageCircle className="w-5 h-5" />
-                <span>Pedir Orçamento no WhatsApp</span>
-              </a>
+              <WhatsappButton 
+                text="Pedir Orçamento no WhatsApp"
+                message="Olá! Gostaria de solicitar um orçamento para serviços em Maricá."
+                className="!text-sm sm:!text-base !px-6 !py-3 !rounded-xl shadow-lg"
+              />
             </div>
           </div>
         </section>
@@ -148,16 +142,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-
-      {/* WHATSAPP FLUTUANTE */}
-      <a 
-        href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="fixed bottom-4 right-4 bg-green-500 hover:bg-green-600 text-white p-3.5 rounded-full shadow-2xl flex items-center justify-center transition transform hover:scale-110 z-50"
-      >
-        <MessageCircle className="w-6 h-6" />
-      </a>
 
       <Footer />
     </div>

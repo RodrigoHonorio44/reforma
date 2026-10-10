@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, MessageCircle, Lock, Settings, UserPlus, LogOut } from 'lucide-react';
+import { Menu, X, Lock, Settings, UserPlus, LogOut } from 'lucide-react';
+// 1. IMPORTAR O COMPONENTE DO WHATSAPP (Ajuste o caminho da pasta se necessário):
+import WhatsappButton from './WatsappButton'; 
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const whatsappNumber = "5521999999999"; 
-  const whatsappMessage = encodeURIComponent("Olá! Vim pelo site e gostaria de um orçamento.");
 
   const isAuthenticated = !!localStorage.getItem('token');
 
@@ -68,12 +68,12 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* MENU DESKTOP (Aparece em telas médias/grandes) */}
+        {/* MENU DESKTOP */}
         <nav className="hidden lg:flex space-x-6 items-center">
-          <button onClick={handleHomeClick} className="hover:text-yellow-400 transition bg-transparent border-none text-white text-base">Início</button>
-          <button onClick={() => handleScrollTo('servicos')} className="hover:text-yellow-400 transition bg-transparent border-none text-white text-base">Serviços</button>
+          <button onClick={handleHomeClick} className="hover:text-yellow-400 transition bg-transparent border-none text-white text-base cursor-pointer">Início</button>
+          <button onClick={() => handleScrollTo('servicos')} className="hover:text-yellow-400 transition bg-transparent border-none text-white text-base cursor-pointer">Serviços</button>
           <Link to="/sobre" className="hover:text-yellow-400 transition">Sobre</Link>
-          <button onClick={() => handleScrollTo('regiao')} className="hover:text-yellow-400 transition bg-transparent border-none text-white text-base">Atendimento</button>
+          <button onClick={() => handleScrollTo('regiao')} className="hover:text-yellow-400 transition bg-transparent border-none text-white text-base cursor-pointer">Atendimento</button>
           
           {isAuthenticated && (
             <>
@@ -100,21 +100,17 @@ export default function Navbar() {
             </Link>
           )}
 
-          <a 
-            href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 shadow"
-          >
-            <MessageCircle className="w-5 h-5" />
-            <span>WhatsApp</span>
-          </a>
+          {/* 2. COMPONENTE REUTILIZADO NO DESKTOP */}
+          <WhatsappButton 
+            text="WhatsApp" 
+            className="!px-4 !py-2 text-sm shadow" 
+          />
         </nav>
 
-        {/* BOTÃO SANDUÍCHE (Sempre visível em telas menores que LG - laptops pequenos/tablets/celulares) */}
+        {/* BOTÃO SANDUÍCHE MOBILE */}
         <button 
           onClick={() => setMenuOpen(!menuOpen)} 
-          className="lg:hidden text-white bg-slate-800 p-2 rounded-lg border border-slate-700 focus:outline-none"
+          className="lg:hidden text-white bg-slate-800 p-2 rounded-lg border border-slate-700 focus:outline-none cursor-pointer"
           aria-label="Abrir menu"
         >
           {menuOpen ? <X className="w-6 h-6 text-yellow-400" /> : <Menu className="w-6 h-6 text-yellow-400" />}
@@ -124,10 +120,10 @@ export default function Navbar() {
       {/* MENU MOBILE EXPANSÍVEL */}
       {menuOpen && (
         <div className="lg:hidden bg-slate-800 border-t border-slate-700 px-5 py-5 space-y-3 shadow-xl">
-          <button onClick={handleHomeClick} className="block w-full text-left text-white hover:text-yellow-400 py-2 bg-transparent border-none font-medium">Início</button>
-          <button onClick={() => handleScrollTo('servicos')} className="block w-full text-left text-white hover:text-yellow-400 py-2 bg-transparent border-none font-medium">Serviços</button>
+          <button onClick={handleHomeClick} className="block w-full text-left text-white hover:text-yellow-400 py-2 bg-transparent border-none font-medium cursor-pointer">Início</button>
+          <button onClick={() => handleScrollTo('servicos')} className="block w-full text-left text-white hover:text-yellow-400 py-2 bg-transparent border-none font-medium cursor-pointer">Serviços</button>
           <Link to="/sobre" onClick={() => setMenuOpen(false)} className="block text-white hover:text-yellow-400 py-2 font-medium">Sobre</Link>
-          <button onClick={() => handleScrollTo('regiao')} className="block w-full text-left text-white hover:text-yellow-400 py-2 bg-transparent border-none font-medium">Atendimento</button>
+          <button onClick={() => handleScrollTo('regiao')} className="block w-full text-left text-white hover:text-yellow-400 py-2 bg-transparent border-none font-medium cursor-pointer">Atendimento</button>
           
           <div className="pt-3 border-t border-slate-700 space-y-2">
             {isAuthenticated && (
@@ -156,15 +152,11 @@ export default function Navbar() {
             )}
           </div>
 
-          <a 
-            href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="bg-green-600 hover:bg-green-700 text-white w-full py-3 rounded-xl flex items-center justify-center space-x-2 font-semibold shadow-md mt-2"
-          >
-            <MessageCircle className="w-5 h-5" />
-            <span>Falar no WhatsApp</span>
-          </a>
+          {/* 3. COMPONENTE REUTILIZADO NO MOBILE */}
+          <WhatsappButton 
+            text="Falar no WhatsApp" 
+            className="w-full !py-3 font-semibold mt-2 rounded-xl" 
+          />
         </div>
       )}
     </header>
