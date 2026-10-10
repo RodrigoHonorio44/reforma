@@ -4,39 +4,53 @@ import { Wrench } from 'lucide-react';
 export default function Gallery() {
   const [works, setWorks] = useState([]);
 
+  // Fotos específicas e idênticas aos serviços descritos nos cards
+  const defaultWorks = [
+    {
+      title: "Fabricação e Instalação de Pia de Mármore",
+      category: "Mármores e Granitos • Maricá",
+      image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80",
+      description: "Confecção de peça sob medida, corte de cuba e instalação completa com acabamento profissional e impermeabilização."
+    },
+    {
+      title: "Organização de Quadro Elétrico",
+      category: "Elétrica • Itaipuaçu",
+      image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
+      description: "Substituição de disjuntores antigos e identificação completa dos circuitos para maior segurança residencial."
+    },
+    {
+      title: "Pintura de Fachada e Muro",
+      category: "Pintura • Centro",
+      image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
+      description: "Aplicação de selador, impermeabilização e pintura externa com acabamento de alto padrão."
+    },
+    {
+      title: "Instalação de Acessórios e Suportes",
+      category: "Pequenos Reparos • Inoã",
+      image: "https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&w=800&q=80",
+      description: "Fixação segura de painel de TV, cortinas, prateleiras e ajustes de portas."
+    }
+  ];
+
   useEffect(() => {
-    // Busca os trabalhos salvos pelo painel administrativo
     const savedWorks = localStorage.getItem('solufix_works');
     if (savedWorks) {
-      setWorks(JSON.parse(savedWorks));
+      try {
+        const parsed = JSON.parse(savedWorks);
+        // Garante que cada card exiba a foto salva no painel ou a foto padrão idêntica
+        const merged = defaultWorks.map((defItem, idx) => {
+          const savedItem = parsed[idx];
+          if (savedItem && savedItem.image && savedItem.image.trim() !== '') {
+            return { ...defItem, ...savedItem };
+          }
+          return defItem;
+        });
+        setWorks(merged);
+      } catch (e) {
+        setWorks(defaultWorks);
+      }
     } else {
-      // Trabalhos padrão iniciais incluindo Mármore e Granito
-      setWorks([
-        {
-          title: "Fabricação e Instalação de Pia de Mármore",
-          category: "Mármores e Granitos • Maricá",
-          image: "",
-          description: "Confecção de peça sob medida, corte de cuba e instalação completa com acabamento profissional e impermeabilização."
-        },
-        {
-          title: "Organização de Quadro Elétrico",
-          category: "Elétrica • Itaipuaçu",
-          image: "",
-          description: "Substituição de disjuntores antigos e identificação completa dos circuitos para maior segurança residencial."
-        },
-        {
-          title: "Pintura de Fachada e Muro",
-          category: "Pintura • Centro",
-          image: "",
-          description: "Aplicação de selador, impermeabilização e pintura externa com acabamento de alto padrão."
-        },
-        {
-          title: "Instalação de Acessórios e Suportes",
-          category: "Pequenos Reparos • Inoã",
-          image: "",
-          description: "Fixação segura de painel de TV, cortinas, prateleiras e ajustes de portas."
-        }
-      ]);
+      setWorks(defaultWorks);
     }
   }, []);
 
@@ -53,7 +67,7 @@ export default function Gallery() {
           {works.map((work, index) => (
             <div key={index} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col justify-between">
               
-              {/* BLOCO DA FOTO */}
+              {/* BLOCO DA FOTO DA GALERIA */}
               <div className="h-48 bg-slate-900 flex items-center justify-center text-slate-400 relative overflow-hidden">
                 {work.image ? (
                   <img 

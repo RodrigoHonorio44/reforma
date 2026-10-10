@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Footer from '../components/Footer';
 import API_URL from '../services/api';
-import { PlusCircle, Check, MessageSquareText, Briefcase, Trash2, Upload, Image as ImageIcon } from 'lucide-react';
+import { PlusCircle, Check, MessageSquareText, Briefcase, Trash2, Upload } from 'lucide-react';
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState('works');
 
   // Estados para Adicionar/Atualizar Trabalhos por Card
-  const [selectedCardIndex, setSelectedCardIndex] = useState('0'); // 0: Mármore, 1: Elétrica, 2: Pintura, 3: Reparos
+  const [selectedCardIndex, setSelectedCardIndex] = useState('0');
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
@@ -16,6 +16,26 @@ export default function Admin() {
   const [successWork, setSuccessWork] = useState(false);
   const [compressing, setCompressing] = useState(false);
 
+  // Lista local de trabalhos para carregar nos inputs ao mudar de card
+  const defaultWorks = [
+    { title: "Fabricação e Instalação de Pia de Mármore", category: "Mármores e Granitos • Maricá", image: "", description: "Confecção de peça sob medida, corte de cuba e instalação completa com acabamento profissional e impermeabilização." },
+    { title: "Organização de Quadro Elétrico", category: "Elétrica • Itaipuaçu", image: "", description: "Substituição de disjuntores antigos e identificação completa dos circuitos para maior segurança residencial." },
+    { title: "Pintura de Fachada e Muro", category: "Pintura • Centro", image: "", description: "Aplicação de selador, impermeabilização e pintura externa com acabamento de alto padrão." },
+    { title: "Instalação de Acessórios e Suportes", category: "Pequenos Reparos • Inoã", image: "", description: "Fixação segura de painel de TV, cortinas, prateleiras e ajustes de portas." }
+  ];
+
+  // Carregar os dados atuais do card selecionado para os inputs do formulário
+  useEffect(() => {
+    const savedWorks = JSON.parse(localStorage.getItem('solufix_works')) || defaultWorks;
+    const currentWork = savedWorks[parseInt(selectedCardIndex)] || defaultWorks[parseInt(selectedCardIndex)];
+    
+    setTitle(currentWork.title || '');
+    setCategory(currentWork.category || '');
+    setDescription(currentWork.description || '');
+    setImageUrl(currentWork.image || '');
+    setImagePreview(currentWork.image || '');
+  }, [selectedCardIndex]);
+
   // Estados para Gestão de Regras do Chat
   const [rules, setRules] = useState([]);
   const [keyword, setKeyword] = useState('');
@@ -23,23 +43,16 @@ export default function Admin() {
   const [errorChat, setErrorChat] = useState('');
   const [successChat, setSuccessChat] = useState('');
 
-  // Obter o token salvo no localStorage
   const getToken = () => localStorage.getItem('token');
 
-  // Buscar regras do chat
   const fetchRules = async () => {
     try {
       const token = getToken();
       const res = await fetch(`${API_URL}/api/admin/chat-rules`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
       if (res.ok) setRules(data);
-      else if (res.status === 401) {
-        setErrorChat('Sessão expirada. Por favor, faça login novamente.');
-      }
     } catch (err) {
       setErrorChat('Erro ao carregar regras do chat.');
     }
@@ -49,7 +62,6 @@ export default function Admin() {
     fetchRules();
   }, []);
 
-  // Função para comprimir a imagem selecionada pelo celular/computador
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -65,7 +77,6 @@ export default function Admin() {
         let width = img.width;
         let height = img.height;
 
-        // Redimensiona mantendo a proporção (Máximo 1000px de largura/altura)
         const MAX_WIDTH = 1000;
         const MAX_HEIGHT = 1000;
         if (width > height) {
@@ -85,7 +96,6 @@ export default function Admin() {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
 
-        // Comprime para JPEG com qualidade 0.8 (leve e com ótima nitidez)
         const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
         setImageUrl(compressedDataUrl);
         setImagePreview(compressedDataUrl);
@@ -94,7 +104,6 @@ export default function Admin() {
     };
   };
 
-  // Submeter ou atualizar o Trabalho do Card selecionado
   const handleWorkSubmit = async (e) => {
     e.preventDefault();
     const workData = { 
@@ -120,33 +129,25 @@ export default function Admin() {
         setSuccessWork(true);
         setTimeout(() => setSuccessWork(false), 4000);
       } else {
-        alert('Erro ao guardar o trabalho. Verifique a autenticação.');
+        throw new Error('Erro na API');
       }
     } catch (error) {
-      console.error('Erro ao enviar dados:', error);
-      // Fallback local com localStorage
-      const existingWorks = JSON.parse(localStorage.getItem('solufix_works')) || [
-        { title: "Fabricação e Instalação de Pia de Mármore", category: "Mármores e Granitos • Maricá", image: "", description: "Confecção de peça sob medida, corte de cuba e instalação completa." },
-        { title: "Organização de Quadro Elétrico", category: "Elétrica • Itaipuaçu", image: "", description: "Substituição de disjuntores antigos." },
-        { title: "Pintura de Fachada e Muro", category: "Pintura • Centro", image: "", description: "Aplicação de selador e pintura externa." },
-        { title: "Instalação de Acessórios e Suportes", category: "Pequenos Reparos • Inoã", image: "", description: "Fixação segura de painel de TV e cortinas." }
-      ];
-
+      const existingWorks = JSON.parse(localStorage.getItem('solufix_works')) || defaultWorks;
       const index = parseInt(selectedCardIndex);
+      
       existingWorks[index] = {
         title: title || existingWorks[index].title,
         category: category || existingWorks[index].category,
-        image: imageUrl || existingWorks[index].image,
+        image: imageUrl !== undefined ? imageUrl : existingWorks[index].image,
         description: description || existingWorks[index].description
       };
+      
       localStorage.setItem('solufix_works', JSON.stringify(existingWorks));
-
       setSuccessWork(true);
       setTimeout(() => setSuccessWork(false), 4000);
     }
   };
 
-  // Criar Regra de Chat
   const handleCreateRule = async (e) => {
     e.preventDefault();
     setErrorChat('');
@@ -177,7 +178,6 @@ export default function Admin() {
     }
   };
 
-  // Apagar Regra de Chat
   const handleDeleteRule = async (id) => {
     if (!window.confirm('Tem certeza que deseja apagar esta regra?')) return;
     const token = getToken();
@@ -185,15 +185,9 @@ export default function Admin() {
     try {
       const res = await fetch(`${API_URL}/api/admin/chat-rules/${id}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
-      if (res.ok) {
-        fetchRules();
-      } else {
-        alert('Erro ao apagar regra.');
-      }
+      if (res.ok) fetchRules();
     } catch (err) {
       alert('Erro de conexão com o servidor.');
     }
@@ -203,14 +197,11 @@ export default function Admin() {
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col justify-between">
       <main className="py-12 px-4 max-w-3xl mx-auto w-full space-y-6">
         
-        {/* Abas de Navegação Interna */}
         <div className="flex space-x-2 border-b border-slate-200 pb-4">
           <button
             onClick={() => setActiveTab('works')}
             className={`px-4 py-2 rounded-xl font-semibold text-sm flex items-center space-x-2 transition ${
-              activeTab === 'works'
-                ? 'bg-slate-900 text-white shadow'
-                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+              activeTab === 'works' ? 'bg-slate-900 text-white shadow' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
             }`}
           >
             <Briefcase className="w-4 h-4 text-yellow-400" />
@@ -220,9 +211,7 @@ export default function Admin() {
           <button
             onClick={() => setActiveTab('chat')}
             className={`px-4 py-2 rounded-xl font-semibold text-sm flex items-center space-x-2 transition ${
-              activeTab === 'chat'
-                ? 'bg-slate-900 text-white shadow'
-                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+              activeTab === 'chat' ? 'bg-slate-900 text-white shadow' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
             }`}
           >
             <MessageSquareText className="w-4 h-4 text-yellow-400" />
@@ -230,7 +219,6 @@ export default function Admin() {
           </button>
         </div>
 
-        {/* ABA 1: ADICIONAR / ATUALIZAR TRABALHOS */}
         {activeTab === 'works' && (
           <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200 space-y-6">
             <div className="space-y-2">
@@ -249,8 +237,6 @@ export default function Admin() {
             )}
 
             <form onSubmit={handleWorkSubmit} className="space-y-4">
-              
-              {/* SELEÇÃO DO CARD */}
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1">Selecione o Card</label>
                 <select 
@@ -287,12 +273,9 @@ export default function Admin() {
                 />
               </div>
 
-              {/* OPÇÃO DE UPLOAD DO COMPUTADOR/CELULAR COM COMPRESSÃO OU LINK */}
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-slate-700">Foto do Serviço (Upload ou Link)</label>
-                
                 <div className="flex flex-col sm:flex-row gap-3 items-center">
-                  {/* Botão de Upload */}
                   <label className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 px-4 py-2.5 rounded-xl text-sm font-medium cursor-pointer flex items-center justify-center space-x-2 transition">
                     <Upload className="w-4 h-4 text-yellow-600" />
                     <span>{compressing ? 'A comprimir foto...' : 'Escolher do Computador/Celular'}</span>
@@ -306,7 +289,6 @@ export default function Admin() {
 
                   <span className="text-xs text-slate-400 font-medium">OU</span>
 
-                  {/* Campo de Link */}
                   <input 
                     type="text" 
                     value={imageUrl.startsWith('data:') ? '' : imageUrl} 
@@ -319,7 +301,6 @@ export default function Admin() {
                   />
                 </div>
 
-                {/* Pré-visualização da Imagem Escolhida */}
                 {imagePreview && (
                   <div className="mt-3 relative w-32 h-20 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
                     <img src={imagePreview} alt="Pré-visualização" className="w-full h-full object-cover" />
@@ -349,7 +330,6 @@ export default function Admin() {
           </div>
         )}
 
-        {/* ABA 2: REGRAS DO CHAT */}
         {activeTab === 'chat' && (
           <div className="space-y-6">
             <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200 space-y-6">
@@ -394,7 +374,6 @@ export default function Admin() {
               </form>
             </div>
 
-            {/* Lista de Regras Cadastradas */}
             <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200 space-y-4">
               <h2 className="font-semibold text-slate-800 text-lg">Regras Cadastradas</h2>
               {rules.length === 0 ? (
@@ -425,7 +404,6 @@ export default function Admin() {
         )}
 
       </main>
-
       <Footer />
     </div>
   );
