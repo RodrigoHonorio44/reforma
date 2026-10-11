@@ -28,7 +28,7 @@ export default function Navbar() {
     const scrollToSection = () => {
       const element = document.getElementById(sectionId);
       if (element) {
-        const yOffset = -100;
+        const yOffset = -80;
         const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
         window.scrollTo({ top: y, behavior: 'smooth' });
       }
@@ -52,12 +52,12 @@ export default function Navbar() {
   };
 
   return (
-    <header className="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+    <header className="bg-slate-900/95 backdrop-blur-md text-white sticky top-0 z-50 border-b border-slate-800 shadow-lg">
+      <div className="max-w-6xl mx-auto px-4 py-2.5 sm:py-3 flex justify-between items-center">
         
-        {/* LOGO */}
-        <Link to="/" onClick={handleHomeClick} className="flex items-center space-x-3 group">
-          <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white border-2 border-yellow-400 flex items-center justify-center overflow-hidden shadow-lg flex-shrink-0">
+        {/* LOGO DA MARCA */}
+        <Link to="/" onClick={handleHomeClick} className="flex items-center space-x-2.5 sm:space-x-3 group">
+          <div className="h-9 w-9 sm:h-11 sm:w-11 rounded-full bg-white border-2 border-yellow-400 flex items-center justify-center overflow-hidden shadow-md flex-shrink-0 group-hover:scale-105 transition">
             <img 
               src="/solufix.jpg" 
               alt="Solufix Reformas Logo" 
@@ -65,10 +65,10 @@ export default function Navbar() {
             />
           </div>
           <div className="flex flex-col">
-            <span className="text-base sm:text-xl font-extrabold tracking-tight leading-none text-white">
+            <span className="text-base sm:text-xl font-black tracking-tight leading-none text-white">
               Solufix <span className="text-yellow-400">Reformas</span>
             </span>
-            <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-slate-400 font-semibold mt-0.5">
+            <span className="text-[9px] sm:text-[10px] uppercase tracking-widest text-slate-400 font-bold mt-0.5">
               Maricá e Região
             </span>
           </div>
@@ -76,91 +76,145 @@ export default function Navbar() {
 
         {/* MENU DESKTOP */}
         <nav className="hidden lg:flex space-x-6 items-center">
-          <button onClick={handleHomeClick} className="hover:text-yellow-400 transition bg-transparent border-none text-white text-base cursor-pointer">Início</button>
-          <button onClick={() => handleScrollTo('servicos')} className="hover:text-yellow-400 transition bg-transparent border-none text-white text-base cursor-pointer">Serviços</button>
-          <Link to="/sobre" className="hover:text-yellow-400 transition">Sobre</Link>
-          <button onClick={() => handleScrollTo('regiao')} className="hover:text-yellow-400 transition bg-transparent border-none text-white text-base cursor-pointer">Atendimento</button>
+          <button 
+            onClick={handleHomeClick} 
+            className="text-slate-200 hover:text-yellow-400 font-medium text-sm transition bg-transparent border-none cursor-pointer"
+          >
+            Início
+          </button>
+          <button 
+            onClick={() => handleScrollTo('servicos')} 
+            className="text-slate-200 hover:text-yellow-400 font-medium text-sm transition bg-transparent border-none cursor-pointer"
+          >
+            Serviços
+          </button>
+          <button 
+            onClick={() => handleScrollTo('galeria')} 
+            className="text-slate-200 hover:text-yellow-400 font-medium text-sm transition bg-transparent border-none cursor-pointer"
+          >
+            Galeria
+          </button>
+          <button 
+            onClick={() => handleScrollTo('regiao')} 
+            className="text-slate-200 hover:text-yellow-400 font-medium text-sm transition bg-transparent border-none cursor-pointer"
+          >
+            Atendimento
+          </button>
           
-          {isAuthenticated && (
-            <>
-              <Link to="/admin" className="text-yellow-400 hover:text-yellow-300 flex items-center space-x-1 text-sm font-semibold bg-yellow-500/10 px-3 py-1.5 rounded-lg border border-yellow-500/20">
-                <Settings className="w-4 h-4" />
+          {/* PAINEL / LOGIN ADMIN */}
+          {isAuthenticated ? (
+            <div className="flex items-center space-x-3 border-l border-slate-700 pl-4">
+              <Link 
+                to="/admin" 
+                className="text-yellow-400 hover:text-yellow-300 flex items-center space-x-1.5 text-xs font-bold bg-yellow-500/10 px-3 py-1.5 rounded-lg border border-yellow-500/20 transition"
+              >
+                <Settings className="w-3.5 h-3.5" />
                 <span>Painel</span>
               </Link>
-              <Link to="/register" className="text-slate-300 hover:text-yellow-400 flex items-center space-x-1 text-sm">
-                <UserPlus className="w-4 h-4" />
-                <span>Registar</span>
-              </Link>
-            </>
-          )}
-
-          {isAuthenticated ? (
-            <button onClick={handleLogout} className="text-red-400 hover:text-red-300 flex items-center space-x-1 text-sm bg-transparent border-none cursor-pointer">
-              <LogOut className="w-4 h-4" />
-              <span>Sair</span>
-            </button>
+              <button 
+                onClick={handleLogout} 
+                className="text-red-400 hover:text-red-300 flex items-center space-x-1 text-xs bg-transparent border-none cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Sair</span>
+              </button>
+            </div>
           ) : (
-            <Link to="/login" className="text-slate-400 hover:text-yellow-400 flex items-center space-x-1 text-sm">
-              <Lock className="w-4 h-4" />
-              <span>Login</span>
+            <Link 
+              to="/login" 
+              className="text-slate-400 hover:text-yellow-400 flex items-center space-x-1 text-xs border-l border-slate-800 pl-4"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>Admin</span>
             </Link>
           )}
 
+          {/* BOTÃO WHATSAPP DESKTOP */}
           <WhatsappButton 
-            text="WhatsApp" 
-            className="!px-4 !py-2 text-sm shadow" 
+            text="Solicitar Orçamento" 
+            className="!px-4 !py-2 !text-xs !font-bold shadow-md rounded-xl" 
           />
         </nav>
 
-        {/* BOTÃO SANDUÍCHE MOBILE */}
+        {/* BOTÃO DE MENU HAMBÚRGUER MOBILE */}
         <button 
           onClick={() => setMenuOpen(!menuOpen)} 
-          className="lg:hidden text-white bg-slate-800 p-2 rounded-lg border border-slate-700 focus:outline-none cursor-pointer"
+          className="lg:hidden text-white bg-slate-800 hover:bg-slate-700 p-2 rounded-xl border border-slate-700 focus:outline-none transition cursor-pointer"
           aria-label="Abrir menu"
         >
           {menuOpen ? <X className="w-6 h-6 text-yellow-400" /> : <Menu className="w-6 h-6 text-yellow-400" />}
         </button>
       </div>
 
-      {/* MENU MOBILE EXPANSÍVEL */}
+      {/* MENU MOBILE DESLIZANTE */}
       {menuOpen && (
-        <div className="lg:hidden bg-slate-800 border-t border-slate-700 px-5 py-5 space-y-3 shadow-xl">
-          <button onClick={handleHomeClick} className="block w-full text-left text-white hover:text-yellow-400 py-2 bg-transparent border-none font-medium cursor-pointer">Início</button>
-          <button onClick={() => handleScrollTo('servicos')} className="block w-full text-left text-white hover:text-yellow-400 py-2 bg-transparent border-none font-medium cursor-pointer">Serviços</button>
-          <Link to="/sobre" onClick={() => setMenuOpen(false)} className="block text-white hover:text-yellow-400 py-2 font-medium">Sobre</Link>
-          <button onClick={() => handleScrollTo('regiao')} className="block w-full text-left text-white hover:text-yellow-400 py-2 bg-transparent border-none font-medium cursor-pointer">Atendimento</button>
-          
-          <div className="pt-3 border-t border-slate-700 space-y-2">
-            {isAuthenticated && (
+        <div className="lg:hidden bg-slate-900/98 border-t border-slate-800 px-5 py-6 space-y-4 shadow-2xl animate-in slide-in-from-top duration-200">
+          <div className="space-y-1">
+            <button 
+              onClick={handleHomeClick} 
+              className="block w-full text-left text-slate-200 hover:text-yellow-400 py-2.5 font-semibold text-base border-b border-slate-800/60 bg-transparent cursor-pointer"
+            >
+              Início
+            </button>
+            <button 
+              onClick={() => handleScrollTo('servicos')} 
+              className="block w-full text-left text-slate-200 hover:text-yellow-400 py-2.5 font-semibold text-base border-b border-slate-800/60 bg-transparent cursor-pointer"
+            >
+              Nossos Serviços
+            </button>
+            <button 
+              onClick={() => handleScrollTo('galeria')} 
+              className="block w-full text-left text-slate-200 hover:text-yellow-400 py-2.5 font-semibold text-base border-b border-slate-800/60 bg-transparent cursor-pointer"
+            >
+              Trabalhos Realizados
+            </button>
+            <button 
+              onClick={() => handleScrollTo('regiao')} 
+              className="block w-full text-left text-slate-200 hover:text-yellow-400 py-2.5 font-semibold text-base border-b border-slate-800/60 bg-transparent cursor-pointer"
+            >
+              Área de Atuação
+            </button>
+          </div>
+
+          {/* SESSÃO ADMIN MOBILE */}
+          <div className="pt-2 border-t border-slate-800 space-y-2">
+            {isAuthenticated ? (
               <>
-                <Link to="/admin" onClick={() => setMenuOpen(false)} className="flex items-center space-x-2 text-yellow-400 py-2 font-semibold">
+                <Link 
+                  to="/admin" 
+                  onClick={() => setMenuOpen(false)} 
+                  className="flex items-center space-x-2 text-yellow-400 py-2 font-bold text-sm bg-yellow-500/10 px-3 rounded-xl border border-yellow-500/20"
+                >
                   <Settings className="w-4 h-4" />
                   <span>Painel Administrativo</span>
                 </Link>
-                <Link to="/register" onClick={() => setMenuOpen(false)} className="flex items-center space-x-2 text-slate-300 py-2">
-                  <UserPlus className="w-4 h-4" />
-                  <span>Registar Usuário</span>
-                </Link>
+                <button 
+                  onClick={handleLogout} 
+                  className="flex items-center space-x-2 text-red-400 py-2 text-sm bg-transparent border-none w-full text-left cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Encerrar Sessão</span>
+                </button>
               </>
-            )}
-
-            {isAuthenticated ? (
-              <button onClick={handleLogout} className="flex items-center space-x-2 text-red-400 py-2 bg-transparent border-none w-full text-left cursor-pointer">
-                <LogOut className="w-4 h-4" />
-                <span>Encerrar Sessão (Sair)</span>
-              </button>
             ) : (
-              <Link to="/login" onClick={() => setMenuOpen(false)} className="flex items-center space-x-2 text-slate-300 hover:text-yellow-400 py-2">
+              <Link 
+                to="/login" 
+                onClick={() => setMenuOpen(false)} 
+                className="flex items-center space-x-2 text-slate-400 hover:text-yellow-400 py-2 text-sm"
+              >
                 <Lock className="w-4 h-4" />
-                <span>Login Admin</span>
+                <span>Área Restrita (Login)</span>
               </Link>
             )}
           </div>
 
-          <WhatsappButton 
-            text="Falar no WhatsApp" 
-            className="w-full !py-3 font-semibold mt-2 rounded-xl" 
-          />
+          {/* BOTÃO WHATSAPP DESTACADO MOBILE */}
+          <div className="pt-2">
+            <WhatsappButton 
+              text="Falar no WhatsApp Agora" 
+              className="w-full !py-3.5 !text-sm !font-extrabold shadow-lg rounded-xl flex justify-center" 
+            />
+          </div>
         </div>
       )}
     </header>
