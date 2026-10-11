@@ -17,7 +17,6 @@ export default function Login() {
     e.preventDefault();
     
     try {
-      // Aponta para a rota correta do seu backend: /api/login
       const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -30,8 +29,8 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok && data.token) {
-        // Usa sessionStorage para expirar a sessão ao fechar a aba/navegador
-        sessionStorage.setItem('token', data.token);
+        // CORRIGIDO: Usa localStorage para persistir a sessão mesmo após dar F5 ou atualizar a página
+        localStorage.setItem('token', data.token);
         navigate('/admin');
       } else {
         setError(data.error || data.message || 'E-mail ou senha incorretos.');

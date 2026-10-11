@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Lock, Settings, UserPlus, LogOut } from 'lucide-react';
-// 1. IMPORTAR O COMPONENTE DO WHATSAPP (Ajuste o caminho da pasta se necessário):
 import WhatsappButton from './WatsappButton'; 
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isAuthenticated = !!localStorage.getItem('token');
+  // Reavalia a autenticação toda vez que a rota muda ou a página recarrega
+  useEffect(() => {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     setMenuOpen(false);
     localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
+    setIsAuthenticated(false);
     navigate('/login');
   };
 
@@ -100,7 +106,6 @@ export default function Navbar() {
             </Link>
           )}
 
-          {/* 2. COMPONENTE REUTILIZADO NO DESKTOP */}
           <WhatsappButton 
             text="WhatsApp" 
             className="!px-4 !py-2 text-sm shadow" 
@@ -152,7 +157,6 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* 3. COMPONENTE REUTILIZADO NO MOBILE */}
           <WhatsappButton 
             text="Falar no WhatsApp" 
             className="w-full !py-3 font-semibold mt-2 rounded-xl" 

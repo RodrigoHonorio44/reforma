@@ -4,14 +4,21 @@ import { PlusCircle, Check } from 'lucide-react';
 
 export default function AdminWorks() {
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState('marmore');
+  const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [successWork, setSuccessWork] = useState(false);
 
   const handleWorkSubmit = async (e) => {
     e.preventDefault();
-    const workData = { title, category, description, imageUrl };
+    const workData = { 
+      title, 
+      category, 
+      location: location || 'Maricá', 
+      description, 
+      imageUrl 
+    };
 
     try {
       const response = await fetch(`${API_URL}/api/works`, {
@@ -27,7 +34,8 @@ export default function AdminWorks() {
       if (response.ok) {
         setSuccessWork(true);
         setTitle('');
-        setCategory('');
+        setCategory('marmore');
+        setLocation('');
         setDescription('');
         setImageUrl('');
         setTimeout(() => setSuccessWork(false), 4000);
@@ -47,48 +55,61 @@ export default function AdminWorks() {
           Painel de Controle
         </span>
         <h1 className="text-2xl font-extrabold text-slate-900">Adicionar Novo Trabalho</h1>
-        <p className="text-sm text-slate-600">Cadastre fotos e descrições para atualizar automaticamente a galeria do site.</p>
+        <p className="text-sm text-slate-600">Cadastre fotos e descrições organizadas por tipo de serviço.</p>
       </div>
 
       {successWork && (
         <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl flex items-center space-x-2 text-sm font-medium">
           <Check className="w-5 h-5" />
-          <span>Trabalho cadastrado e enviado para o servidor com sucesso!</span>
+          <span>Trabalho cadastrado com sucesso!</span>
         </div>
       )}
 
       <form onSubmit={handleWorkSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-semibold text-slate-700 mb-1">Selecione a Categoria / Tema</label>
+          <select 
+            value={category} 
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 bg-white"
+          >
+            <option value="marmore">Serviços de Mármore e Granito</option>
+            <option value="eletrica">Instalações e Reparos Elétricos</option>
+            <option value="pintura">Pintura Residencial e Comercial</option>
+            <option value="reparos">Pequenos Reparos e Consertos</option>
+          </select>
+        </div>
+
         <div>
           <label className="block text-sm font-semibold text-slate-700 mb-1">Título do Serviço</label>
           <input 
             type="text" 
             value={title} 
             onChange={(e) => setTitle(e.target.value)} 
-            placeholder="Ex: Instalação de Quadro Elétrico" 
+            placeholder="Ex: Instalação de Pia de Mármore" 
             required
             className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1">Categoria e Bairro</label>
+          <label className="block text-sm font-semibold text-slate-700 mb-1">Bairro / Localidade</label>
           <input 
             type="text" 
-            value={category} 
-            onChange={(e) => setCategory(e.target.value)} 
-            placeholder="Ex: Elétrica • Itaipuaçu" 
-            required
+            value={location} 
+            onChange={(e) => setLocation(e.target.value)} 
+            placeholder="Ex: Itaipuaçu, Centro, Inoã" 
             className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-1">URL da Imagem ou Foto</label>
+          <label className="block text-sm font-semibold text-slate-700 mb-1">URL da Foto</label>
           <input 
             type="text" 
             value={imageUrl} 
             onChange={(e) => setImageUrl(e.target.value)} 
-            placeholder="Cole o link da imagem hospedada" 
+            placeholder="Cole a URL da foto do serviço" 
             required
             className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
           />
@@ -99,7 +120,7 @@ export default function AdminWorks() {
           <textarea 
             value={description} 
             onChange={(e) => setDescription(e.target.value)} 
-            placeholder="Breve resumo do que foi feito..." 
+            placeholder="Resumo do trabalho realizado..." 
             rows="3"
             required
             className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -108,7 +129,7 @@ export default function AdminWorks() {
 
         <button 
           type="submit" 
-          className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-xl shadow transition flex items-center justify-center space-x-2"
+          className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 rounded-xl shadow transition flex items-center justify-center space-x-2 cursor-pointer"
         >
           <PlusCircle className="w-5 h-5 text-yellow-400" />
           <span>Salvar no Servidor</span>

@@ -1,5 +1,4 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import Footer from '../components/Footer';
 import Testimonials from '../components/Testimonials';
 import Gallery from '../components/Gallery';
@@ -7,33 +6,69 @@ import EmergencyBanner from '../components/EmergencyBanner';
 import TrustBadges from '../components/TrustBadges';
 import FaqSection from '../components/FaqSection';
 import WhatsappButton from '../components/WatsappButton'; 
-import { Zap, Paintbrush, Wrench, Hammer, ShieldCheck, Clock, ThumbsUp, MapPin } from 'lucide-react';
+import { Zap, Paintbrush, Wrench, Hammer, ShieldCheck, Clock, ThumbsUp, MapPin, X, CheckCircle2 } from 'lucide-react';
 
 export default function Home() {
+  // Estado para armazenar o serviço selecionado no Modal
+  const [selectedService, setSelectedService] = useState(null);
+
+  // Lista de serviços com os detalhes completos para o Modal
   const services = [
     {
       slug: "marmore",
       title: "Serviços de Mármore e Granito",
       description: "Confecção de peças sob medida, pias, bancadas, soleiras, lavatórios e instalação completa com acabamento profissional.",
-      icon: <Hammer className="w-7 h-7 text-amber-600" />
+      fullTitle: "Especialistas em Mármores, Granitos e Pedras Decorativas",
+      detailedDescription: "Executamos projetos personalizados sob medida para transformar os ambientes da sua casa ou comércio com acabamento impecável e pedras de alta durabilidade.",
+      icon: <Hammer className="w-7 h-7 text-amber-600" />,
+      features: [
+        "Confecção e instalação de pias e bancadas para cozinhas e áreas gourmet.",
+        "Soleiras, peitoris, lavabos esculpidos e nichos embutidos para banheiros.",
+        "Polimento, ajustes e impermeabilização profissional de pedras naturais.",
+        "Medição técnica no local e instalação rápida em Maricá e região."
+      ]
     },
     {
       slug: "eletrica",
       title: "Instalações e Reparos Elétricos",
       description: "Manutenção preventiva e corretiva, troca de disjuntores, tomadas, chuveiros, ventiladores de teto e instalações residenciais.",
-      icon: <Zap className="w-7 h-7 text-yellow-500" />
+      fullTitle: "Manutenção e Instalações Elétricas Residenciais e Comerciais",
+      detailedDescription: "Segurança e eficiência em primeiro lugar. Realizamos desde pequenas manutenções preventivas até reestruturações elétricas completas com total conformidade técnica.",
+      icon: <Zap className="w-7 h-7 text-yellow-500" />,
+      features: [
+        "Troca e instalação de disjuntores, quadros elétricos e diferenciais (DR).",
+        "Instalação de tomadas, interruptores, ventiladores de teto e lustres.",
+        "Passagem de fios, chuveiros elétricos, cooktops e reparações de curto-circuitos.",
+        "Atendimento rápido e seguro para emergências elétricas na região."
+      ]
     },
     {
       slug: "pintura",
       title: "Pintura Residencial e Comercial",
       description: "Pintura de paredes, tetos, portões, aplicação de massa corrida, texturas e acabamentos de alta qualidade.",
-      icon: <Paintbrush className="w-7 h-7 text-blue-500" />
+      fullTitle: "Pintura Profissional e Acabamentos Decorativos",
+      detailedDescription: "Renove o visual do seu imóvel com uma pintura limpa, duradoura e de altíssimo padrão, utilizando os melhores materiais do mercado e preparação adequada das superfícies.",
+      icon: <Paintbrush className="w-7 h-7 text-blue-500" />,
+      features: [
+        "Pintura de paredes, tetos, fachadas e portões metálicos.",
+        "Aplicação de massa corrida, texturas, efeitos especiais e grafiato.",
+        "Tratamento de infiltrações, umidade, lixamento e preparação de superfícies.",
+        "Proteção total dos móveis e pisos durante a execução do serviço."
+      ]
     },
     {
       slug: "reparos",
       title: "Pequenos Reparos e Consertos",
       description: "Fixação de prateleiras, varões de cortina, troca de fechaduras, pequenos reparos hidráulicos e manutenções gerais.",
-      icon: <Wrench className="w-7 h-7 text-orange-500" />
+      fullTitle: "Soluções Rápidas e Pequenos Reparos Gerais",
+      detailedDescription: "Aqueles pequenos problemas do dia a dia que exigem precisão, ferramentas adequadas e rapidez, resolvidos sem dor de cabeça para o seu lar.",
+      icon: <Wrench className="w-7 h-7 text-orange-500" />,
+      features: [
+        "Fixação de prateleiras, suportes de TV, quadros e varões de cortina.",
+        "Troca de fechaduras, dobradiças, trincos e consertos de portas/janelas.",
+        "Pequenos reparos hidráulicos (torneiras, sifões, vazamentos simples).",
+        "Praticidade, pontualidade e garantia em cada pequeno serviço."
+      ]
     }
   ];
 
@@ -94,7 +129,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SERVIÇOS */}
+        {/* SEÇÃO DE SERVIÇOS COM MODAL */}
         <section id="servicos" className="py-12 px-4 max-w-6xl mx-auto">
           <div className="text-center space-y-2 mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Nossos Serviços</h2>
@@ -109,12 +144,12 @@ export default function Home() {
                   <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-4">{service.description}</p>
                 </div>
                 <div className="border-t border-slate-100 pt-3">
-                  <Link 
-                    to={`/servico/${service.slug}`}
-                    className="block text-center bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs sm:text-sm py-2 rounded-lg transition"
+                  <button 
+                    onClick={() => setSelectedService(service)}
+                    className="w-full text-center bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-800 font-semibold text-xs sm:text-sm py-2 rounded-lg transition cursor-pointer"
                   >
                     Ver detalhes
-                  </Link>
+                  </button>
                 </div>
               </div>
             ))}
@@ -142,6 +177,70 @@ export default function Home() {
           </div>
         </section>
       </main>
+
+      {/* MODAL DE DETALHES DO SERVIÇO */}
+      {selectedService && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+          <div className="bg-white w-full max-w-xl rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+            
+            {/* Cabeçalho do Modal */}
+            <div className="bg-slate-900 text-white p-6 flex justify-between items-start">
+              <div className="flex items-center space-x-3">
+                <div className="p-2.5 bg-yellow-400 text-slate-900 rounded-xl">
+                  {selectedService.icon}
+                </div>
+                <div>
+                  <span className="text-xs uppercase tracking-wider text-yellow-400 font-bold">Detalhes do Serviço</span>
+                  <h3 className="text-xl font-extrabold text-white leading-tight">{selectedService.title}</h3>
+                </div>
+              </div>
+              <button 
+                onClick={() => setSelectedService(null)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg bg-slate-800 transition cursor-pointer"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Conteúdo do Modal */}
+            <div className="p-6 overflow-y-auto space-y-6 text-left">
+              <div>
+                <h4 className="text-base font-bold text-slate-900 mb-2">{selectedService.fullTitle}</h4>
+                <p className="text-sm text-slate-600 leading-relaxed">{selectedService.detailedDescription}</p>
+              </div>
+
+              <div className="space-y-3">
+                <h5 className="text-xs font-bold uppercase tracking-wider text-slate-400">O que está incluído / Diferenciais:</h5>
+                <ul className="space-y-2">
+                  {selectedService.features.map((feature, index) => (
+                    <li key={index} className="flex items-start space-x-2.5 text-sm text-slate-700">
+                      <CheckCircle2 className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Rodapé integrando o WhatsappButton reutilizável */}
+            <div className="p-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row gap-3">
+              <button 
+                onClick={() => setSelectedService(null)}
+                className="w-full sm:w-1/2 py-3 px-4 border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold rounded-xl text-sm transition cursor-pointer"
+              >
+                Fechar
+              </button>
+
+              <WhatsappButton 
+                text="Solicitar Orçamento"
+                message={`Olá! Gostaria de solicitar um orçamento para o serviço de: ${selectedService.title}.`}
+                className="w-full sm:w-1/2 !py-3 !text-sm !font-bold !rounded-xl"
+              />
+            </div>
+
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

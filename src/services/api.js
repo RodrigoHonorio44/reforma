@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-export const API_URL = 'https://api-reforma.rodhonsystem.com.br';
+// Puxa a URL da variável de ambiente do Vite (com fallback seguro para produção)
+export const API_URL = import.meta.env.VITE_API_URL || 'https://api-reforma.rodhonsystem.com.br';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -23,5 +24,5 @@ api.interceptors.request.use(
   }
 );
 
-export default API_URL;
 export { api };
+export default API_URL;
