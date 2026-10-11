@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import  API_URL  from '../services/api';
+import API_URL from '../services/api';
 import { PlusCircle, Check } from 'lucide-react';
 
 export default function AdminWorks() {
@@ -16,7 +16,11 @@ export default function AdminWorks() {
     try {
       const response = await fetch(`${API_URL}/api/works`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        },
+        credentials: 'include',
         body: JSON.stringify(workData),
       });
 
@@ -27,10 +31,12 @@ export default function AdminWorks() {
         setDescription('');
         setImageUrl('');
         setTimeout(() => setSuccessWork(false), 4000);
+      } else {
+        alert('Erro ao salvar no servidor.');
       }
     } catch (error) {
       console.error('Erro ao enviar dados:', error);
-      alert('Erro ao conectar com o servidor no Debian.');
+      alert('Erro ao conectar com o servidor.');
     }
   };
 

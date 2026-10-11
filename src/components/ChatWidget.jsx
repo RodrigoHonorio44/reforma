@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import API_URL from '../services/api';
+import { api } from '../services/api';
 import { MessageSquare, X, Send, Bot, PhoneCall, Zap, Wrench, ShieldCheck, ArrowRight, Paintbrush } from 'lucide-react';
 
 export default function ChatWidget() {
@@ -17,7 +17,7 @@ export default function ChatWidget() {
     } else {
       saudacao = 'Boa noite';
     }
-return `${saudacao}! Seja bem-vindo à Solufix Reformas. Sou o seu assistente virtual. Escolha um dos tópicos abaixo ou digite sua dúvida:`;
+    return `${saudacao}! Seja bem-vindo à Solufix Reformas. Sou o seu assistente virtual. Escolha um dos tópicos abaixo ou digite sua dúvida:`;
   };
 
   const [messages, setMessages] = useState([
@@ -55,20 +55,16 @@ return `${saudacao}! Seja bem-vindo à Solufix Reformas. Sou o seu assistente vi
     await sendToBackend(topicKeyword);
   };
 
-  // Comunicação com o backend (lê as regras do MongoDB/Painel)
+  // Comunicação com o backend (utilizando a instância Axios configurada)
   const sendToBackend = async (textToSend) => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          message: textToSend,
-          sessionId: sessionIdRef.current 
-        }),
+      const response = await api.post('/api/chat', {
+        message: textToSend,
+        sessionId: sessionIdRef.current 
       });
 
-      const data = await res.json();
+      const data = response.data;
       const messageList = data.messages && data.messages.length > 0 
         ? data.messages 
         : data.reply 
@@ -92,7 +88,6 @@ return `${saudacao}! Seja bem-vindo à Solufix Reformas. Sou o seu assistente vi
 
             if (index === messageList.length - 1) {
               setLoading(false);
-              // Após responder o tópico, podemos pedir o bairro para fechar o lead
               if (step === 'welcome') {
                 setTimeout(() => {
                   handleSendBotMessage('Para continuarmos o atendimento, em qual bairro de Maricá você está?');
@@ -108,6 +103,7 @@ return `${saudacao}! Seja bem-vindo à Solufix Reformas. Sou o seu assistente vi
         setLoading(false);
       }
     } catch (err) {
+      console.error('[CHAT ERROR]', err);
       handleSendBotMessage('Não foi possível conectar ao servidor de atendimento.');
       setLoading(false);
     }
@@ -209,7 +205,7 @@ return `${saudacao}! Seja bem-vindo à Solufix Reformas. Sou o seu assistente vi
               </div>
             ))}
 
-            {/* Tópicos Principais (Clicáveis no início) */}
+            {/* Tópicos Principais */}
             {step === 'welcome' && (
               <div className="flex flex-col gap-2 pt-1">
                 <button
@@ -253,7 +249,7 @@ return `${saudacao}! Seja bem-vindo à Solufix Reformas. Sou o seu assistente vi
             <div ref={chatEndRef} />
           </div>
 
-          {/* Botão de Redirecionamento para o WhatsApp com Resumo */}
+          {/* Botão do WhatsApp */}
           {showWhatsAppButton && (
             <div className="px-3 py-2 bg-emerald-50 border-t border-emerald-100 flex items-center justify-between">
               <span className="text-xs text-emerald-800 font-medium">Falar com especialista:</span>
