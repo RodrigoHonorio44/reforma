@@ -4,7 +4,8 @@ import { ChevronLeft, ChevronRight, Wrench } from 'lucide-react';
 const API_URL = import.meta.env.VITE_API_URL || 'https://api-reforma.rodhonsystem.com.br';
 
 export default function Gallery() {
-  const [worksByCategory, setWorksByCategory] = useState({
+  // Fotos e dados padrões fixos do site (serão sempre o 1º item da lista)
+  const defaultWorks = {
     marmore: [
       {
         title: "Fabricação e Instalação de Pia de Mármore",
@@ -37,7 +38,9 @@ export default function Gallery() {
         description: "Fixação segura de painel de TV, cortinas, prateleiras e ajustes de portas."
       }
     ]
-  });
+  };
+
+  const [worksByCategory, setWorksByCategory] = useState(defaultWorks);
 
   // Índices para controlar a foto atual em cada mini-carrossel
   const [activeIndexes, setActiveIndexes] = useState({
@@ -74,12 +77,13 @@ export default function Gallery() {
             else if (cat.includes('reparo')) grouped.reparos.push(item);
           });
 
-          setWorksByCategory((prev) => ({
-            marmore: grouped.marmore.length > 0 ? grouped.marmore : prev.marmore,
-            eletrica: grouped.eletrica.length > 0 ? grouped.eletrica : prev.eletrica,
-            pintura: grouped.pintura.length > 0 ? grouped.pintura : prev.pintura,
-            reparos: grouped.reparos.length > 0 ? grouped.reparos : prev.reparos
-          }));
+          // Mantém a imagem padrão como PRIMEIRA (posição 0) e adiciona as novas da API atrás
+          setWorksByCategory({
+            marmore: [...defaultWorks.marmore, ...grouped.marmore],
+            eletrica: [...defaultWorks.eletrica, ...grouped.eletrica],
+            pintura: [...defaultWorks.pintura, ...grouped.pintura],
+            reparos: [...defaultWorks.reparos, ...grouped.reparos]
+          });
         }
       })
       .catch(() => {});
@@ -119,13 +123,13 @@ export default function Gallery() {
             return (
               <div key={key} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col justify-between">
                 
-                {/* FOTO COM SETAS DO MINI-CARROSSEL */}
-                <div className="h-48 bg-slate-900 relative flex items-center justify-center text-slate-400 overflow-hidden group">
+                {/* FOTO COM ENQUADRAMENTO PERFEITO (object-contain) E NAVEGAÇÃO */}
+                <div className="h-56 bg-slate-950 relative flex items-center justify-center text-slate-400 overflow-hidden group">
                   {currentItem.imageUrl || currentItem.image ? (
                     <img 
                       src={currentItem.imageUrl || currentItem.image} 
                       alt={currentItem.title} 
-                      className="w-full h-full object-cover transition-all duration-300"
+                      className="w-full h-full object-contain transition-all duration-300"
                     />
                   ) : (
                     <div className="text-center p-4">
@@ -134,33 +138,33 @@ export default function Gallery() {
                     </div>
                   )}
 
-                  {/* SETAS DE NAVEGAÇÃO INTERNA DO CARD (SÓ APARECEM SE HOUVER MAIS DE 1 FOTO CADASTRADA) */}
+                  {/* SETAS DE NAVEGAÇÃO DO CARROSSEL */}
                   {total > 1 && (
                     <>
                       <button 
                         onClick={() => handlePrev(key, total)}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-slate-900/80 hover:bg-slate-900 text-yellow-400 p-1.5 rounded-full shadow transition cursor-pointer"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-slate-900/80 hover:bg-slate-900 text-yellow-400 p-1.5 rounded-full shadow transition cursor-pointer z-10"
                         aria-label="Anterior"
                       >
                         <ChevronLeft className="w-4 h-4" />
                       </button>
                       <button 
                         onClick={() => handleNext(key, total)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-slate-900/80 hover:bg-slate-900 text-yellow-400 p-1.5 rounded-full shadow transition cursor-pointer"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-slate-900/80 hover:bg-slate-900 text-yellow-400 p-1.5 rounded-full shadow transition cursor-pointer z-10"
                         aria-label="Próximo"
                       >
                         <ChevronRight className="w-4 h-4" />
                       </button>
 
-                      {/* INDICADOR DE FOTOS (EX: 1/3) */}
-                      <span className="absolute bottom-2 right-2 bg-slate-900/80 text-white text-[10px] px-2 py-0.5 rounded-full font-semibold">
+                      {/* CONTADOR DE FOTOS (EX: 1/2) */}
+                      <span className="absolute bottom-2 right-2 bg-slate-900/80 text-white text-[10px] px-2 py-0.5 rounded-full font-semibold z-10">
                         {currentIndex + 1} / {total}
                       </span>
                     </>
                   )}
                 </div>
 
-                {/* CONTEÚDO DO CARD DO TEMA */}
+                {/* CONTEÚDO DO CARD */}
                 <div className="p-6 space-y-2 flex-grow flex flex-col justify-between">
                   <div>
                     <span className="text-xs font-semibold text-yellow-600 uppercase tracking-wide block mb-1">

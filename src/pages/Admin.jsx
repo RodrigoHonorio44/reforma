@@ -62,6 +62,7 @@ export default function Admin() {
     fetchRules();
   }, []);
 
+  // FUNÇÃO DE UPLOAD COM COMPRESSÃO OTIMIZADA
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -77,8 +78,10 @@ export default function Admin() {
         let width = img.width;
         let height = img.height;
 
-        const MAX_WIDTH = 1000;
-        const MAX_HEIGHT = 1000;
+        // Limites ajustados para otimizar tamanho
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+
         if (width > height) {
           if (width > MAX_WIDTH) {
             height *= MAX_WIDTH / width;
@@ -96,7 +99,9 @@ export default function Admin() {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
 
-        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        // Qualidade reduzida para 0.65 (reduz bastante o tamanho em bytes sem perdas visíveis)
+        const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.65);
+        
         setImageUrl(compressedDataUrl);
         setImagePreview(compressedDataUrl);
         setCompressing(false);
