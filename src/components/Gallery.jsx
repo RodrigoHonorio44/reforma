@@ -54,7 +54,7 @@ export default function Gallery() {
     { key: 'marmore', label: 'MÁRMORES E GRANITOS' },
     { key: 'eletrica', label: 'ELÉTRICA' },
     { key: 'pintura', label: 'PINTURA' },
-    { key: 'reparos', label: 'PEQUENOS REPAROS' }
+    { key: 'reparos', label: 'REPAROS E OBRAS' }
   ];
 
   useEffect(() => {
@@ -71,13 +71,21 @@ export default function Gallery() {
 
           data.forEach((item) => {
             const cat = item.category?.toLowerCase() || '';
-            if (cat.includes('marmore') || cat.includes('mármore')) grouped.marmore.push(item);
-            else if (cat.includes('eletrica') || cat.includes('elétrica')) grouped.eletrica.push(item);
-            else if (cat.includes('pintura')) grouped.pintura.push(item);
-            else if (cat.includes('reparo')) grouped.reparos.push(item);
+
+            // Agrupamento por palavra-chave flexível
+            if (cat.includes('marmore') || cat.includes('mármore') || cat.includes('granito')) {
+              grouped.marmore.push(item);
+            } else if (cat.includes('eletrica') || cat.includes('elétrica')) {
+              grouped.eletrica.push(item);
+            } else if (cat.includes('pintura')) {
+              grouped.pintura.push(item);
+            } else {
+              // Qualquer outra categoria (pequenos reparos, alvenaria, vidraçaria, reformas) entra no 4º card
+              grouped.reparos.push(item);
+            }
           });
 
-          // Mantém a imagem padrão como PRIMEIRA (posição 0) e adiciona as novas da API atrás
+          // Unifica mantendo o item padrão fixo no início
           setWorksByCategory({
             marmore: [...defaultWorks.marmore, ...grouped.marmore],
             eletrica: [...defaultWorks.eletrica, ...grouped.eletrica],
@@ -103,6 +111,29 @@ export default function Gallery() {
     }));
   };
 
+  // Função auxiliar para extrair a categoria e o bairro
+  const parseCategoryAndLocation = (item, defaultLabel) => {
+    if (!item.category) {
+      return {
+        label: defaultLabel,
+        location: item.location || ''
+      };
+    }
+
+    if (item.category.includes('•')) {
+      const parts = item.category.split('•').map((s) => s.trim());
+      return {
+        label: parts[0] || defaultLabel,
+        location: parts[1] || ''
+      };
+    }
+
+    return {
+      label: item.category,
+      location: item.location || ''
+    };
+  };
+
   return (
     <section id="galeria" className="py-16 px-4 bg-slate-50">
       <div className="max-w-6xl mx-auto">
@@ -112,18 +143,23 @@ export default function Gallery() {
           <p className="text-slate-600">Compromisso com o capricho, limpeza e organização em cada serviço.</p>
         </div>
 
-        {/* GRID FIXO DE 4 CARDS (CADA UM COM SEU PRÓPRIO MINI-CARROSSEL) */}
+        {/* GRID FIXO DE 4 CARDS */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {categoryConfigs.map(({ key, label }) => {
+          {categoryConfigs.map(({ key, label: defaultLabel }) => {
             const items = worksByCategory[key] || [];
             const currentIndex = activeIndexes[key] || 0;
             const currentItem = items[currentIndex] || {};
             const total = items.length;
 
+            const { label: displayCategory, location: displayLocation } = parseCategoryAndLocation(
+              currentItem,
+              defaultLabel
+            );
+
             return (
               <div key={key} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col justify-between">
                 
-                {/* FOTO COM ENQUADRAMENTO PERFEITO (object-contain) E NAVEGAÇÃO */}
+                {/* FOTO E NAVEGAÇÃO */}
                 <div className="h-56 bg-slate-950 relative flex items-center justify-center text-slate-400 overflow-hidden group">
                   {currentItem.imageUrl || currentItem.image ? (
                     <img 
@@ -138,7 +174,7 @@ export default function Gallery() {
                     </div>
                   )}
 
-                  {/* SETAS DE NAVEGAÇÃO DO CARROSSEL */}
+                  {/* SETAS DE NAVEGAÇÃO */}
                   {total > 1 && (
                     <>
                       <button 
@@ -168,7 +204,7 @@ export default function Gallery() {
                 <div className="p-6 space-y-2 flex-grow flex flex-col justify-between">
                   <div>
                     <span className="text-xs font-semibold text-yellow-600 uppercase tracking-wide block mb-1">
-                      {label} {currentItem.location ? `• ${currentItem.location}` : ''}
+                      {displayCategory} {displayLocation ? `• ${displayLocation}` : ''}
                     </span>
                     <h3 className="text-base font-bold text-slate-900 mb-2 leading-snug">
                       {currentItem.title}
