@@ -13,6 +13,7 @@ import ServiceDetail from '../pages/ServiceDetail';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Admin from '../pages/Admin';
+import OrcamentoSolufix from '../pages/OrcamentoSolufix'; // Importa o OrcamentoSolufix.jsx da pasta pages
 
 export default function AppRoutes() {
   return (
@@ -29,7 +30,17 @@ export default function AppRoutes() {
             <Route path="/servicos/:id" element={<ServiceDetail />} />
             <Route path="/login" element={<Login />} />
 
-            {/* Rota Protegida do Register (Apenas usuários logados podem acessar) */}
+            {/* Rota Protegida do Gerador de Orçamento da Solufix */}
+            <Route 
+              path="/orcamento" 
+              element={
+                <ProtectedRoute>
+                  <OrcamentoSolufix />
+                </ProtectedRoute>
+              } 
+            />
+
+            {/* Rota Protegida do Register */}
             <Route 
               path="/register" 
               element={

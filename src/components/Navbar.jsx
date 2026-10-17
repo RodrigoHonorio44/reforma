@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Lock, Settings, UserPlus, LogOut } from 'lucide-react';
+import { Menu, X, Lock, Settings, LogOut, FileText } from 'lucide-react';
 import WhatsappButton from './WatsappButton'; 
 
 export default function Navbar() {
@@ -101,9 +101,16 @@ export default function Navbar() {
             Atendimento
           </button>
           
-          {/* PAINEL / LOGIN ADMIN */}
+          {/* PAINEL / ORÇAMENTO / LOGIN ADMIN */}
           {isAuthenticated ? (
             <div className="flex items-center space-x-3 border-l border-slate-700 pl-4">
+              <Link 
+                to="/orcamento" 
+                className="text-blue-400 hover:text-blue-300 flex items-center space-x-1.5 text-xs font-bold bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20 transition"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>Orçamento</span>
+              </Link>
               <Link 
                 to="/admin" 
                 className="text-yellow-400 hover:text-yellow-300 flex items-center space-x-1.5 text-xs font-bold bg-yellow-500/10 px-3 py-1.5 rounded-lg border border-yellow-500/20 transition"
@@ -176,10 +183,18 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* SESSÃO ADMIN MOBILE */}
+          {/* SESSÃO ADMIN / ORÇAMENTO MOBILE */}
           <div className="pt-2 border-t border-slate-800 space-y-2">
             {isAuthenticated ? (
               <>
+                <Link 
+                  to="/orcamento" 
+                  onClick={() => setMenuOpen(false)} 
+                  className="flex items-center space-x-2 text-blue-400 py-2 font-bold text-sm bg-blue-500/10 px-3 rounded-xl border border-blue-500/20"
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>Gerar Orçamento</span>
+                </Link>
                 <Link 
                   to="/admin" 
                   onClick={() => setMenuOpen(false)} 
